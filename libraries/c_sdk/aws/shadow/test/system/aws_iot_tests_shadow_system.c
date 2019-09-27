@@ -484,6 +484,7 @@ TEST_SETUP( Shadow_System )
     connectInfo.clientIdentifierLength = ( uint16_t ) ( sizeof( AWS_IOT_TEST_SHADOW_THING_NAME ) - 1 );
     connectInfo.keepAliveSeconds = IOT_TEST_MQTT_SHORT_KEEPALIVE_INTERVAL_S;
 
+    configPRINTF( ( "TEST_SETUP before IotMqtt_Connect" ));
     /* Establish an MQTT connection. */
     if( IotMqtt_Connect( &_networkInfo,
                          &connectInfo,
@@ -493,6 +494,7 @@ TEST_SETUP( Shadow_System )
         TEST_FAIL_MESSAGE( "Failed to establish MQTT connection for Shadow tests." );
     }
 
+    configPRINTF( ( "TEST_SETUP before AwsIotShadow_TimedDelete" ) );
     /* Delete any existing Shadow so all tests start with no Shadow. */
     status = AwsIotShadow_TimedDelete( _mqttConnection,
                                        AWS_IOT_TEST_SHADOW_THING_NAME,
@@ -506,6 +508,8 @@ TEST_SETUP( Shadow_System )
     {
         TEST_FAIL_MESSAGE( "Failed to delete shadow in test set up." );
     }
+
+    configPRINTF( ( "TEST_SETUP Done" ) );
 }
 
 /*-----------------------------------------------------------*/

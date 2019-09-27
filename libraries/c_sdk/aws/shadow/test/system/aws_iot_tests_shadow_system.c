@@ -491,6 +491,7 @@ TEST_SETUP( Shadow_System )
                          AWS_IOT_TEST_SHADOW_TIMEOUT,
                          &_mqttConnection ) != IOT_MQTT_SUCCESS )
     {
+        configPRINTF( ( "TEST_SETUP before IotMqtt_Connect failed" ));
         TEST_FAIL_MESSAGE( "Failed to establish MQTT connection for Shadow tests." );
     }
 

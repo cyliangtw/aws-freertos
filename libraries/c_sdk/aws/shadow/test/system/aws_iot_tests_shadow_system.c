@@ -190,6 +190,7 @@ static void _deltaCallback( void * pArgument,
     const char * pValue = NULL, * pClientToken = NULL;
     size_t valueLength = 0, clientTokenLength = 0;
 
+    configPRINTF( ( "In _deltaCallback\n" ) );
     /* Check callback type and MQTT connection. */
     AwsIotShadow_Assert( pCallback->callbackType == AWS_IOT_SHADOW_DELTA_CALLBACK );
     AwsIotShadow_Assert( pCallback->mqttConnection == _mqttConnection );
@@ -607,6 +608,7 @@ TEST( Shadow_System, DeltaCallback )
     deltaCallback.pCallbackContext = &waitSem;
     deltaCallback.function = _deltaCallback;
 
+    configPRINTF( ( "IN Test DeltaCallback\n" ) );
     /* Set a desired state in the Update document. */
     updateDocument.pThingName = AWS_IOT_TEST_SHADOW_THING_NAME;
     updateDocument.thingNameLength = THING_NAME_LENGTH;

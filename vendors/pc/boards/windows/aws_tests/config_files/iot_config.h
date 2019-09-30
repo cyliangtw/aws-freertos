@@ -28,6 +28,8 @@
 #define IOT_THREAD_DEFAULT_STACK_SIZE        2048
 #define IOT_THREAD_DEFAULT_PRIORITY          5
 
+#define IOT_LOG_LEVEL_GLOBAL IOT_LOG_DEBUG
+
 /* Include the common configuration file for FreeRTOS. */
 #include "iot_config_common.h"
 

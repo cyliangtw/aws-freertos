@@ -126,6 +126,9 @@ static void prvMiscInitialization( void );
 static void prvSetupHardware( void );
 /*-----------------------------------------------------------*/
 
+#ifdef NVT_AUDIO
+void vAudioTask( void *pvParameters );
+#endif
 
 /**
  * @brief Application runtime entry point.
@@ -158,7 +161,10 @@ int main( void )
     prvMiscInitialization();
     configPRINTF( ( "FreeRTOS App Ver:%x\n", xAppFirmwareVersion));    
     configPRINTF( ( "FreeRTOS_IPInit\n" ) );	
-    xTaskCreate( vCheckTask, "Check", mainCHECK_TASK_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, NULL );	
+    xTaskCreate( vCheckTask, "Check", mainCHECK_TASK_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, NULL );	  
+#ifdef NVT_AUDIO
+    xTaskCreate( vAudioTask, "Audio", mainCHECK_TASK_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, NULL );	
+#endif
 
     /* A simple example to demonstrate key and certificate provisioning in
      * microcontroller flash using PKCS#11 interface. This should be replaced
@@ -207,6 +213,13 @@ static void prvSetupHardware( void )
     CLK_EnableModuleClock(UART0_MODULE);
     CLK_EnableModuleClock(EMAC_MODULE);
 
+#ifdef NVT_AUDIO
+    /* Enable I2S0 module clock */
+    CLK_EnableModuleClock(I2S0_MODULE);
+    /* Enable I2C2 module clock */
+    CLK_EnableModuleClock(I2C2_MODULE);
+#endif
+
     /* Select IP clock source */
     CLK_SetModuleClock(UART0_MODULE, CLK_CLKSEL1_UART0SEL_HXT, CLK_CLKDIV0_UART0(1));
 
@@ -231,6 +244,16 @@ static void prvSetupHardware( void )
                      SYS_GPE_MFPH_PE10MFP_EMAC_RMII_TXD0 |
                      SYS_GPE_MFPH_PE11MFP_EMAC_RMII_TXD1 |
                      SYS_GPE_MFPH_PE12MFP_EMAC_RMII_TXEN;
+#ifdef NVT_AUDIO
+    SYS->GPF_MFPL = (SYS->GPF_MFPL & ~(SYS_GPF_MFPL_PF6MFP_Msk|SYS_GPF_MFPL_PF7MFP_Msk)) |
+                    (SYS_GPF_MFPL_PF6MFP_I2S0_LRCK|SYS_GPF_MFPL_PF7MFP_I2S0_DO);
+    SYS->GPF_MFPH = (SYS->GPF_MFPH & ~(SYS_GPF_MFPH_PF8MFP_Msk|SYS_GPF_MFPH_PF9MFP_Msk|SYS_GPF_MFPH_PF10MFP_Msk)) |
+                    (SYS_GPF_MFPH_PF8MFP_I2S0_DI|SYS_GPF_MFPH_PF9MFP_I2S0_MCLK|SYS_GPF_MFPH_PF10MFP_I2S0_BCLK );
+    SYS->GPD_MFPL &= ~(SYS_GPD_MFPL_PD0MFP_Msk | SYS_GPD_MFPL_PD1MFP_Msk);
+    SYS->GPD_MFPL |= (SYS_GPD_MFPL_PD0MFP_I2C2_SDA | SYS_GPD_MFPL_PD1MFP_I2C2_SCL);
+    PF->SMTEN |= GPIO_SMTEN_SMTEN10_Msk;
+    PD->SMTEN |= GPIO_SMTEN_SMTEN1_Msk;
+#endif
 
     // Enable high slew rate on all RMII TX output pins
     PE->SLEWCTL = (GPIO_SLEWCTL_HIGH << GPIO_SLEWCTL_HSREN10_Pos) |

@@ -79,4 +79,8 @@ void I2S0_IRQHandler(void)
     }
 }
 
+void I2S0_ResetAudioBuffer(void)
+{
+    u32AudioBuffPos=0 ;
+}
 /*** (C) COPYRIGHT 2016 Nuvoton Technology Corp. ***/

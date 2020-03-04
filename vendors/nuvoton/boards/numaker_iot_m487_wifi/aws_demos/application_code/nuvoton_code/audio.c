@@ -244,6 +244,8 @@ void vAudioTask( void *pvParameters )
     printf("+------------------------------------------------------------------------+\n");
     printf("  NOTE: This sample code needs to work with WAU88L25.\n");
 
+    I2S0_ResetAudioBuffer();
+  
     /* Init I2C2 to access Codec */
     I2C2_Init();
 

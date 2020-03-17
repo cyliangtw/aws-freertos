@@ -244,6 +244,15 @@ void vAudioTask( void *pvParameters )
     printf("+------------------------------------------------------------------------+\n");
     printf("  NOTE: This sample code needs to work with WAU88L25.\n");
 
+    printf("  Please press keypad sw3 to start audio record ...\n");
+    SYS->GPG_MFPL = (SYS->GPG_MFPL & ~(SYS_GPG_MFPL_PG5MFP_Msk));
+    GPIO_SetMode(PG, BIT5, GPIO_MODE_INPUT);    
+    while ( PG5 != 0)
+    {
+      vTaskDelay(1);
+    }
+    printf(" Now, start audio record ...[%d]\n", PG5);
+    
     I2S0_ResetAudioBuffer();
   
     /* Init I2C2 to access Codec */

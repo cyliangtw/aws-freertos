@@ -163,7 +163,7 @@ int main( void )
     configPRINTF( ( "FreeRTOS_IPInit\n" ) );	
     xTaskCreate( vCheckTask, "Check", mainCHECK_TASK_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, NULL );	  
 #ifdef NVT_AUDIO
-    xTaskCreate( vAudioTask, "Audio", mainCHECK_TASK_STACK_SIZE, NULL, mainCHECK_TASK_PRIORITY, NULL );	
+    xTaskCreate( vAudioTask, "Audio", mainCHECK_TASK_STACK_SIZE*2, NULL, mainCHECK_TASK_PRIORITY, NULL );	
 #endif
 
     /* A simple example to demonstrate key and certificate provisioning in

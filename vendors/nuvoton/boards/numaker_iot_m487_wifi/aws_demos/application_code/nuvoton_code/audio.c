@@ -231,8 +231,160 @@ void NAU88L25_Setup(void)
     printf("NAU88L25 Configured done.\n");
 }
 
+void NAU88L25_ConfigSampleRate(int rate, char count, char length) {
+    int  clkDivider;
+    int  i2sPcmCtrl2;
+    int  lrClkDiv;
+    char bClkDiv;
+    char mClkDiv;
+    
+    if (count > 1) {
+        /* FIXME */
+        count = 2;
+    } else {
+        count = 1;
+    }
+    
+    if (length > 16) {
+        /* FIXME */
+        length = 32;
+    } else {
+        length = 16;
+    }
+    
+    if (rate % 11025) {
+        /* 48000 series 12.288Mhz */
+        I2C_WriteNAU88L25( 0x0005, 0x3126 );    /* FLL2 FLL_FRAC */
+        I2C_WriteNAU88L25( 0x0006, 0x0008 );    /* FLL3 FLL_INTEGER */
+        
+        /* FIXME */
+        if (rate > 48000)
+            rate = 8000;
+        
+        mClkDiv = 49152000 / (rate * 256);
+    } else {
+        /* 44100 series 11.2896Mhz */
+        I2C_WriteNAU88L25( 0x0005, 0x86C2 );    /* FLL2 FLL_FRAC */
+        I2C_WriteNAU88L25( 0x0006, 0x0007 );    /* FLL3 FLL_INTEGER */
+        
+        /* FIXME */
+        if (rate > 44100)
+            rate = 11025;
+        
+        mClkDiv = 45158400 / (rate * 256);
+    }
+    
+    bClkDiv  = (rate * 256) / (rate * count * length);
+    lrClkDiv = (rate * count * length) / rate;
+    
+    switch (mClkDiv) {
+        case 1:
+            mClkDiv = 0;
+            break;
+        case 2:
+            mClkDiv = 2;
+            break;
+        case 4:
+            mClkDiv = 3;
+            break;
+        case 8:
+            mClkDiv = 4;
+            break;
+        case 16:
+            mClkDiv = 5;
+            break;
+        case 32:
+            mClkDiv = 6;
+            break;
+        case 3:
+            mClkDiv = 7;
+            break;
+        case 6:
+            mClkDiv = 10;
+            break;
+        case 12:
+            mClkDiv = 11;
+            break;
+        case 24:
+            mClkDiv = 12;
+            break;
+        case 48:
+            mClkDiv = 13;
+            break;
+        case 96:
+            mClkDiv = 14;
+            break;
+        case 5:
+            mClkDiv = 15;
+            break;
+        default:
+            printf("mclk divider not match!\n");
+            mClkDiv = 0;
+            break;
+    }
+    
+    clkDivider = 0x8050 | mClkDiv;
+    I2C_WriteNAU88L25( 0x0003, clkDivider );    /* CLK_DIVIDER */
+    
+    switch (bClkDiv) {
+        case 2:
+            bClkDiv = 0;
+            break;
+        case 4:
+            bClkDiv = 1;
+            break;
+        case 8:
+            bClkDiv = 2;
+            break;
+        case 16:
+            bClkDiv = 3;
+            break;
+        case 32:
+            bClkDiv = 4;
+            break;
+        case 64:
+            bClkDiv = 5;
+            break;
+        default:
+            printf("bclk divider not match!\n");
+            bClkDiv = 0;
+            break;
+    }
+    
+    switch (lrClkDiv) {
+        case 256:
+            lrClkDiv = 0;
+            break;
+        case 128:
+            lrClkDiv = 1;
+            break;
+        case 64:
+            lrClkDiv = 2;
+            break;
+        case 32:
+            lrClkDiv = 3;
+            break;
+        default:
+            printf("lrclk divider not match!\n");
+            lrClkDiv = 0;
+            break;
+    }
+    
+    if (length == 16) {
+        I2C_WriteNAU88L25( 0x001C, 0x0002 );    /* I2S_PCM_CTRL1 16-bit I2S */
+    } else {
+        /* FIXME */
+        I2C_WriteNAU88L25( 0x001C, 0x000E );    /* I2S_PCM_CTRL1 32-bit I2S */
+    }
+    
+    i2sPcmCtrl2 = 0x0018 | (lrClkDiv << 12) | bClkDiv;
+
+    I2C_WriteNAU88L25( 0x001D, i2sPcmCtrl2 );
+    
+}
+
 /* config play sampling rate */
-void NAU88L25_ConfigSampleRate(uint32_t u32SampleRate)
+void NAU88L25_ConfigPlaySampleRate(uint32_t u32SampleRate)
 {
     printf("[NAU88L25] Configure Sampling Rate to %d\n", u32SampleRate);
 
@@ -445,7 +597,7 @@ void vAudioTask( void *pvParameters )
     /* Initialize NAU88L25 codec */
     vTaskDelay(20000/1000); 
     NAU88L25_Setup();
-    NAU88L25_ConfigSampleRate(48000);    
+    NAU88L25_ConfigSampleRate(16000, 2, 16);
 #endif
     /* FIFO threshold could be 0~15 */
     I2S_SetFIFO(I2S0, 7, 7);

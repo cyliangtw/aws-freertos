@@ -24,6 +24,9 @@ uint32_t audioTxCnt=0;
 uint32_t rxFIFOLevel;
 extern FIL* gAudiohFile;
 
+//#define AUDIO_TX_LOOPBACK   // To call Audio_TX in  I2S0_IRQHandler
+#define AUDIO_TX_SDCARD       // Can't call store SD card in I2S0_IRQHandler
+
 void Audio_TX()
 {
     uint32_t u32Reg;
@@ -32,7 +35,7 @@ void Audio_TX()
     uint32_t  sendBuf[128];
     UINT retBytes;
   
-#if 1 // Send to I2S output  
+#ifdef AUDIO_TX_LOOPBACK // Send to I2S output  
 
     if ((audioRxCnt - audioTxCnt) >= 16)
     {
@@ -63,8 +66,9 @@ void Audio_TX()
             }
      }
      
-
-#else // Send to Cloud
+#endif
+#ifdef AUDIO_TX_SDCARD 
+      // Send to SD card or Cloud
       // Set 128 bytes per packet to transfer
       while ((audioRxCnt - audioTxCnt) >= 128)
       {   
@@ -134,7 +138,9 @@ void I2S0_IRQHandler(void)
         }
     }
 #else
+  #ifdef AUDIO_TX_LOOPBACK
     Audio_TX();
+  #endif
 #endif
     if (u32Reg & I2S_STATUS0_RXTHIF_Msk)
     {

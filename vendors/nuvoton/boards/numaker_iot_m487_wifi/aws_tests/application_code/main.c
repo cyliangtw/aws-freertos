@@ -238,8 +238,10 @@ void vApplicationDaemonTaskStartupHook( void )
 {
     if( SYSTEM_Init() == pdPASS )
     {
+#if ( configENABLED_NETWORKS & AWSIOT_NETWORK_TYPE_WIFI )
         /* Connect to the Wi-Fi before running the tests. */
         prvWifiConnect();
+#endif
         
         /* Create the task to run tests. */
         xTaskCreate( TEST_RUNNER_RunTests_task,
@@ -252,6 +254,7 @@ void vApplicationDaemonTaskStartupHook( void )
 }
 /*-----------------------------------------------------------*/
 
+#if ( configENABLED_NETWORKS & AWSIOT_NETWORK_TYPE_WIFI )
 void prvWifiConnect( void )
 {
     WIFINetworkParams_t  xNetworkParams;
@@ -322,6 +325,7 @@ void prvWifiConnect( void )
 #endif
     }
 }
+#endif
 /*-----------------------------------------------------------*/
 
 void vAssertCalled( const char * pcFile,

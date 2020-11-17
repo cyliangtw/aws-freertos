@@ -26,6 +26,7 @@
 
 /* Standard include. */
 #include <stdbool.h>
+#include "aws_iot_network_config.h"
 
 /* MQTT demo configuration. */
 #define IOT_DEMO_MQTT_PUBLISH_BURST_COUNT    ( 10 )

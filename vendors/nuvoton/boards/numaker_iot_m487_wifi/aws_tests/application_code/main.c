@@ -234,6 +234,25 @@ static void prvMiscInitialization( void )
 }
 /*-----------------------------------------------------------*/
 
+static void testRunnerTask( void * pvParameters )
+{
+#if ( configENABLED_NETWORKS & AWSIOT_NETWORK_TYPE_CELLULAR )
+    bool retCellular = false;
+    /* Connect to the cellular network before running the demos. */
+    retCellular = setupCellular();
+    if( retCellular == false )
+    {
+        configPRINTF( ( "Cellular failed to initialize.\r\n" ) );
+
+        /* Stop here if we fail to initialize cellular. */
+        configASSERT( retCellular != true );
+    }
+#endif
+
+    TEST_RUNNER_RunTests_task( pvParameters );
+}
+/*-----------------------------------------------------------*/
+
 void vApplicationDaemonTaskStartupHook( void )
 {
     if( SYSTEM_Init() == pdPASS )
@@ -242,9 +261,9 @@ void vApplicationDaemonTaskStartupHook( void )
         /* Connect to the Wi-Fi before running the tests. */
         prvWifiConnect();
 #endif
-        
+
         /* Create the task to run tests. */
-        xTaskCreate( TEST_RUNNER_RunTests_task,
+        xTaskCreate( testRunnerTask,
                      "TestRunner",
                      mainTEST_RUNNER_TASK_STACK_SIZE,
                      NULL,

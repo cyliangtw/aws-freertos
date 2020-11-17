@@ -294,18 +294,6 @@ static CellularCommInterfaceError_t prvCellularOpen( CellularCommInterfaceReceiv
         ( void ) memset( pIotCommIntfCtx, 0, sizeof( CellularCommInterfaceContext ) );
     }
 
-    /* Setup the UART device. */
-    if( ret == IOT_COMM_INTERFACE_SUCCESS )
-    {
-        pIotCommIntfCtx->uart = ( UART_T * ) CELLULAR_UART;
-        if( Cellular_Uart_Init( pIotCommIntfCtx->uart ) != pdTRUE )
-        {
-            IotLogError( "UART init failed" );
-            vEventGroupDelete( pIotCommIntfCtx->pEventGroup );
-            ret = IOT_COMM_INTERFACE_DRIVER_ERROR;
-        }
-    }
-
     /* Setup the read FIFO. */
     if( ret == IOT_COMM_INTERFACE_SUCCESS )
     {
@@ -315,6 +303,18 @@ static CellularCommInterfaceError_t prvCellularOpen( CellularCommInterfaceReceiv
         {
             IotLogError( "EventGroup create failed" );
             ret = IOT_COMM_INTERFACE_NO_MEMORY;
+        }
+    }
+
+    /* Setup the UART device. */
+    if( ret == IOT_COMM_INTERFACE_SUCCESS )
+    {
+        pIotCommIntfCtx->uart = ( UART_T * ) CELLULAR_UART;
+        if( Cellular_Uart_Init( pIotCommIntfCtx->uart ) != pdTRUE )
+        {
+            IotLogError( "UART init failed" );
+            vEventGroupDelete( pIotCommIntfCtx->pEventGroup );
+            ret = IOT_COMM_INTERFACE_DRIVER_ERROR;
         }
     }
 

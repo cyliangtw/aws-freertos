@@ -36,7 +36,11 @@
  *
  * Valid values are pdLITTLE_ENDIAN and pdBIG_ENDIAN.
  */
+#ifdef BOARD_HAS_CELLULAR
+#define socketsconfigBYTE_ORDER              pdBIG_ENDIAN
+#else
 #define socketsconfigBYTE_ORDER              pdLITTLE_ENDIAN
+#endif
 
 /**
  * @brief Default socket send timeout.

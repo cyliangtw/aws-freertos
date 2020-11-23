@@ -451,11 +451,6 @@
               <FileType>1</FileType>
               <FilePath>../../../../../freertos_kernel/timers.c</FilePath>
             </File>
-            <File>
-              <FileName>comm_if_nuvoton.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\vendors\nuvoton\boards\numaker_iot_m487_wifi\ports\comm_if\comm_if_nuvoton.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
@@ -3061,6 +3056,13 @@
         </Group>
         <Group>
           <GroupName>vendors/nuvoton/boards/numaker_iot_m487_wifi/ports/comm_if/</GroupName>
+          <Files>
+            <File>
+              <FileName>comm_if_nuvoton.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\vendors\nuvoton\boards\numaker_iot_m487_wifi\ports\comm_if\comm_if_nuvoton.c</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>libraries/abstractions/cellular/include/</GroupName>

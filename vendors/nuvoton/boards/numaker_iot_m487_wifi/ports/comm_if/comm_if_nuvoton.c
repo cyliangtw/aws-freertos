@@ -194,6 +194,9 @@ BaseType_t Cellular_Uart_Init( UART_T * uart )
         /* Set PB multi-function pins for UART1 RXD, TXD */
         SYS->GPB_MFPL &= ~ ( SYS_GPB_MFPL_PB3MFP_Msk | SYS_GPB_MFPL_PB2MFP_Msk );
         SYS->GPB_MFPL |= ( SYS_GPB_MFPL_PB3MFP_UART1_TXD | SYS_GPB_MFPL_PB2MFP_UART1_RXD );
+        /* Set PA multi-function pins for UART1 CTS, RTS*/
+        SYS->GPA_MFPL &= ~ ( SYS_GPA_MFPL_PA0MFP_Msk | SYS_GPA_MFPL_PA1MFP_Msk );
+        SYS->GPA_MFPL |= ( SYS_GPA_MFPL_PA0MFP_UART1_nRTS | SYS_GPA_MFPL_PA1MFP_UART1_nCTS );
     }
     else
     {

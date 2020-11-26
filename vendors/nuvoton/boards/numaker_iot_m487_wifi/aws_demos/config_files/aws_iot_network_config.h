@@ -40,7 +40,7 @@
  * in "aws_iot_network.h"
  */
 
-#define configSUPPORTED_NETWORKS    ( AWSIOT_NETWORK_TYPE_WIFI | AWSIOT_NETWORK_TYPE_ETH )
+#define configSUPPORTED_NETWORKS    ( AWSIOT_NETWORK_TYPE_WIFI | AWSIOT_NETWORK_TYPE_ETH | AWSIOT_NETWORK_TYPE_CELLULAR )
 
 /**
  * @brief Configuration flag which is used to enable one or more network interfaces for a board.
@@ -51,10 +51,12 @@
  * in "aws_iot_network.h"
  *
  */
-#ifndef M487_ETH_DEMO
-#define configENABLED_NETWORKS      ( AWSIOT_NETWORK_TYPE_WIFI )
-#else
+#ifdef M487_ETH_DEMO
 #define configENABLED_NETWORKS      ( AWSIOT_NETWORK_TYPE_ETH )
+#elif defined BOARD_HAS_CELLULAR
+#define configENABLED_NETWORKS      ( AWSIOT_NETWORK_TYPE_CELLULAR )
+#else
+#define configENABLED_NETWORKS      ( AWSIOT_NETWORK_TYPE_WIFI )
 #endif
 
 #endif /* CONFIG_FILES_AWS_IOT_NETWORK_CONFIG_H_ */

@@ -48,10 +48,12 @@
 #define democonfigDEMO_STACKSIZE                       ( configMINIMAL_STACK_SIZE * 20 )
 #define democonfigDEMO_PRIORITY                        ( tskIDLE_PRIORITY + 5 )
 
-#ifndef M487_ETH_DEMO
-#define democonfigNETWORK_TYPES                        ( AWSIOT_NETWORK_TYPE_WIFI )
+#ifdef M487_ETH_DEMO
+#define democonfigNETWORK_TYPES                        ( AWSIOT_NETWORK_TYPE_ETH )
+#elif defined BOARD_HAS_CELLULAR
+#define democonfigNETWORK_TYPES                        ( AWSIOT_NETWORK_TYPE_CELLULAR )
 #else
-#define democonfigNETWORK_TYPES                         (AWSIOT_NETWORK_TYPE_ETH)
+#define democonfigNETWORK_TYPES                        ( AWSIOT_NETWORK_TYPE_WIFI )
 #endif
 
 

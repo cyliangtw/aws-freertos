@@ -258,11 +258,13 @@ static void prvMiscInitialization( void )
 
 void vApplicationDaemonTaskStartupHook( void )
 {
-#if ( configENABLED_NETWORKS & AWSIOT_NETWORK_TYPE_WIFI )
+#if ( configENABLED_NETWORKS & (AWSIOT_NETWORK_TYPE_WIFI | AWSIOT_NETWORK_TYPE_CELLULAR) )
     if( SYSTEM_Init() == pdPASS )
     {
+#if ( configENABLED_NETWORKS & AWSIOT_NETWORK_TYPE_WIFI )
         /* Connect to the Wi-Fi before running the tests. */
         prvWifiConnect();
+#endif
 
         /* Start the demo tasks. */
         DEMO_RUNNER_RunDemos();
